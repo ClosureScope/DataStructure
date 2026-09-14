@@ -26,7 +26,7 @@ The latest PDF is built automatically on every push and published to
 
 | File | Description |
 |------|-------------|
-| [`notebook.typ`](notebook.typ) | Source of the notes, written in Typst |
+| [`DataStructure-Notebook.typ`](DataStructure-Notebook.typ) | Source of the notes, written in Typst |
 | [`template.typ`](template.typ) | Styling template (imported by the notes, not compiled on its own) |
 | [`course.toml`](course.toml) | Course metadata — the single source of truth for this README and the release workflow |
 | `*.pdf` | Compiled output — built by CI, get it from [Releases](https://github.com/ClosureScope/DataStructure/releases/latest) |
@@ -34,7 +34,7 @@ The latest PDF is built automatically on every push and published to
 ## Building locally
 
 ```bash
-typst compile notebook.typ
+typst compile DataStructure-Notebook.typ
 ```
 
 ---
