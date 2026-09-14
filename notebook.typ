@@ -5,16 +5,7 @@
 #show emph: text.with(font: (font-en, font-kai), style: "normal")
 #show: frame-style(styles.hint)
 #show: ilm.with(
-  title: [课程标题],
+  title: [数据结构],
   author: "Closure",
   figure-index: (enabled: true),
 )
-
-= 第一章
-== 第一节
-
-在这里开始写笔记。
-
-#definition[定义][
-  这是一个定义框的示例。
-]
