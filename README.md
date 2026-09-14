@@ -1,8 +1,8 @@
 <div align="center">
 
-# Course Name
+# Data Structure
 
-课程中文名 · `COURSE0000` · SJTU
+数据结构 · `CS2602` · SJTU
 
 **Author Closure**
 
@@ -14,7 +14,7 @@
 
 ---
 
-Course notes for **Course Name（课程中文名, `COURSE0000`）** at **SJTU**,
+Course notes for **Data Structure（数据结构, `CS2602`）** at **SJTU**,
 typeset in [Typst](https://typst.app/) and continuously built into a PDF by CI.
 
 ## Download
