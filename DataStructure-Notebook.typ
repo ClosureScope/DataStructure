@@ -14,7 +14,7 @@
 )
 
 = 线性表
-
+== 线性表的定义
 - `create()`
 - `clear()`
 - `length()`
@@ -73,11 +73,47 @@
 尾节点`next`指向头节点，头节点`prior`指向尾节点
 = 栈
 FILO
-|函数|时间复杂度|实现|
-| --- | --- | --- |
-|`create()`|||
-|`clear()`|||
-|`push(x)`|||
-|`pop()`|||
-|`top()`|||
-|`isEmpty()`|||
+- `create()`
+- `push()`
+- `pop()`
+- `top()`
+- `isEmpty()`
+== 栈的顺序实现
+维护`data`, `top`
+#three-line-table[
+  |函数|时间复杂度|实现|
+  | --- | --- | --- |
+  |`create()`|$O(1)$|申请空间，`top = -1`|
+  |`push(x)`|$O(1)$|`++top; data[top] = x`，数组满时调用`doubleSpace()`|
+  |`pop()`|$O(1)$|`return data[top]; --top`|
+  |`top()`|$O(1)$|`return data[top]`|
+  |`isEmpty()`|$O(1)$|`return top == -1`|
+  |`doubleSpace()`|$O(n)$|拷贝到新空间后释放原空间，更新`data`|
+]
+
+== 栈的链接实现
+维护`top`
+#three-line-table[
+  |函数|时间复杂度|实现|
+  | --- | --- | --- |
+  |`create()`|$O(1)$|申请空间，`top = nullptr`|
+  |`push(x)`|$O(1)$|表头插入节点，更新`top`指向当前节点|
+  |`pop()`|$O(1)$|`return top->data`，更新`top`指向后继节点，析构头节点|
+  |`top()`|$O(1)$|`return top->data`|
+  |`isEmpty()`|$O(1)$|`return top == -1`|
+]
+== 栈的应用
+=== 函数调用
+`call`入栈，`ret`出栈
+=== 符号平衡检查
+遇到`(`入栈，遇到`)`出栈，需要元素出栈时栈不为空且最终栈为空即为合法表达式
+=== 表达式的计算
+- 前缀式：`+ a b`
+- 中缀式：`a + b`
+- 后缀式：`a b +`
+后缀式计算算法：
+
+读到操作数时将其入栈，读到运算符时将栈顶两个操作数出栈，把运算结果进栈
+
+中缀式转换为后缀式算法：
+
