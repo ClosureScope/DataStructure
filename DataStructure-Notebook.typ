@@ -14,16 +14,6 @@
 )
 
 = 线性表
-== 线性表的定义
-- `create()`
-- `clear()`
-- `length()`
-- `insert(i, x)`
-- `remove(i)`
-- `search(x)`
-- `visit(i)`
-- `traverse()`
-
 == 线性表的顺序实现
 维护`data`, `size`, `capacity`
 #three-line-table[
@@ -32,7 +22,7 @@
   |`create()`| $O(1)$|申请`capacity`大小空间|
   |`clear()`|$O(1)$|`size = 0`|
   |`length()`|$O(1)$|`return size`|
-  |`insert(i, x)`|$O(n)$|后续元素全部后移一位后插入，`++size`|
+  |`insert(i, x)`|$O(n)$|后续元素全部后移一位后插入，`++size`，数组满时调用`doubleSpace()`|
   |`remove(i)`|$O(n)$|后续元素全部前移一位，`--size`|
   |`search(x)`|$O(n)$|遍历|
   |`visit(i)`|$O(1)$|`return data[i]`|
@@ -47,10 +37,10 @@
   |函数|时间复杂度|实现|
   | --- | --- | --- |
   |`create()`| $O(1)$|申请空间|
-  |`clear()`|$O(n)$|`size = 0`并遍历析构所有节点|
+  |`clear()`|$O(n)$|`size = 0`并遍历析构所有结点|
   |`length()`|$O(1)$|`return size`|
-  |`insert(i, x)`|$O(1)$|前驱`next`指向插入节点，插入节点`next`指向后继，`++size`|
-  |`remove(i)`|$O(1)$|前驱`next`指向后继，析构当前节点，`--size`|
+  |`insert(i, x)`|$O(n)$|前驱`next`指向插入结点，插入结点`next`指向后继，`++size`|
+  |`remove(i)`|$O(n)$|前驱`next`指向后继，析构当前结点，`--size`|
   |`search(x)`|$O(n)$|遍历|
   |`visit(i)`|$O(n)$|遍历|
   |`traverse()`|$O(n)$|遍历|
@@ -61,23 +51,18 @@
   |函数|时间复杂度|实现|
   | --- | --- | --- |
   |`create()`| $O(1)$|申请空间|
-  |`clear()`|$O(n)$|`size = 0`并遍历析构所有节点|
+  |`clear()`|$O(n)$|`size = 0`并遍历析构所有结点|
   |`length()`|$O(1)$|`return size`|
-  |`insert(i, x)`|$O(1)$|前驱`next`，后继`prior`指向插入节点，插入节点`next`指向后继，`prior`指向前驱，`++size`|
-  |`remove(i)`|$O(1)$|前驱`next`指向后继，后继`prior`指向前驱，析构当前节点，`--size`|
+  |`insert(i, x)`|$O(n)$|前驱`next`，后继`prior`指向插入结点，插入结点`next`指向后继，`prior`指向前驱，`++size`|
+  |`remove(i)`|$O(n)$|前驱`next`指向后继，后继`prior`指向前驱，析构当前结点，`--size`|
   |`search(x)`|$O(n)$|遍历|
   |`visit(i)`|$O(n)$|遍历|
   |`traverse()`|$O(n)$|遍历|
 ]
 === 循环链表
-尾节点`next`指向头节点，头节点`prior`指向尾节点
+尾结点`next`指向头结点，头结点`prior`指向尾结点
 = 栈
-FILO
-- `create()`
-- `push()`
-- `pop()`
-- `top()`
-- `isEmpty()`
+LIFO
 == 栈的顺序实现
 维护`data`, `top`
 #three-line-table[
@@ -88,19 +73,19 @@ FILO
   |`pop()`|$O(1)$|`return data[top]; --top`|
   |`top()`|$O(1)$|`return data[top]`|
   |`isEmpty()`|$O(1)$|`return top == -1`|
-  |`doubleSpace()`|$O(n)$|拷贝到新空间后释放原空间，更新`data`|
+  |`doubleSpace()`|$O(n)$|拷贝到新空间后释放原空间，更新`data`, `capacity`|
 ]
 
 == 栈的链接实现
-维护`top`
+维护`top`为单链表的头指针
 #three-line-table[
   |函数|时间复杂度|实现|
   | --- | --- | --- |
   |`create()`|$O(1)$|申请空间，`top = nullptr`|
-  |`push(x)`|$O(1)$|表头插入节点，更新`top`指向当前节点|
-  |`pop()`|$O(1)$|`return top->data`，更新`top`指向后继节点，析构头节点|
+  |`push(x)`|$O(1)$|表头插入结点，更新`top`指向当前结点|
+  |`pop()`|$O(1)$|`return top->data`，更新`top`指向后继结点，删除头结点|
   |`top()`|$O(1)$|`return top->data`|
-  |`isEmpty()`|$O(1)$|`return top == -1`|
+  |`isEmpty()`|$O(1)$|`return top == nullptr`|
 ]
 == 栈的应用
 === 函数调用
@@ -116,4 +101,67 @@ FILO
 读到操作数时将其入栈，读到运算符时将栈顶两个操作数出栈，把运算结果进栈
 
 中缀式转换为后缀式算法：
+- 读入操作数，立刻输出
+- 读入`(`，进栈
+- 读入`)`，将栈中运算符不断出栈直到弹出`(`
+- 读入运算符，若栈顶运算符优先级高，则不断出栈直到栈顶运算符优先级低为止，压入新运算符
+- 读取结束时，出栈所有运算符
+= 队列
+FIFO
+== 队列的顺序实现
+若队头位置固定，出队会引起大量数据移动；若队头位置不固定，浪费空间
+
+维护`data`, `front`, `rear`
+
+循环队列：将数组首尾相连，`front`, `rear`分别指向队头前一个位置和队尾，然而这样`front == rear`时无法判断是队列空还是队列满，
+故强制规定`front`指向的队头前一个位置保持为空，则`front == rear`时队列空，`front == (rear + 1) % capacity`时队列满
+
+#three-line-table[
+  |函数|时间复杂度|实现|
+  | --- | --- | --- |
+  |`create()`|$O(1)$|申请空间，`front = 0; rear = 0`|
+  |`enqueue(x)`|$O(1)$|`rear = (rear + 1) % capacity; data[rear] = x`，数组满时调用`doubleSpace()`|
+  |`dequeue()`|$O(1)$|`front = (front + 1) % capacity; return data[front]`|
+  |`front()`|$O(1)$|`return data[(front + 1) % capacity]`|
+  |`isEmpty()`|$O(1)$|`return front == rear`|
+  |`doubleSpace()`|$O(n)$|从`front`位置开始拷贝到新数组头部，更新`data`, `capacity`|
+]
+== 队列的链接实现
+维护`front`, `rear`为单链表的头指针，尾指针
+#three-line-table[
+  |函数|时间复杂度|实现|
+  | --- | --- | --- |
+  |`create()`|$O(1)$|`front = nullptr; rear = nullptr`|
+  |`enqueue(x)`|$O(1)$|表尾插入结点，使`rear`指向当前结点；队列为空时必须使`front`和`rear`同时指向当前结点|
+  |`dequeue()`|$O(1)$|`return front -> data`，更新`front`指向后继结点，删除头结点；队列只有一个元素时必须使`front`和`rear`同时置为`nullptr`|
+  |`front()`|$O(1)$|`return front -> data`|
+  |`isEmpty()`|$O(1)$|`return front == nullptr`|
+]
+
+= 树
+== 二叉树
+=== 二叉树的概念
+#definition[满二叉树][一棵高度为$k$并具有$2^k - 1$个结点的二叉树]
+#definition[完全二叉树][满二叉树的最底层自右至左依次去掉若干结点得到的二叉树]
+=== 二叉树的性质
+#proposition[][一棵非空二叉树的第$i$层上最多有$2^(i-1)$个结点]
+#proposition[][一棵高度为$k$的二叉树，最多具有$2^k-1$个结点]
+#proposition[][对于一棵非空二叉树，叶子结点数为$n_0$，度数为$2$的结点数为$n_2$，则$ n_0 = n_2 + 1 $]
+#proof[][
+  $ abs(E) = n_0 + n_1 + n_2 - 1 = n_1 + 2 n_2 $
+]
+#proposition[][具有$n$个结点的完全二叉树的高度$ k = floor(log_2 n) + 1 $]
+#proposition[][对一棵完全二叉树的结点按层自上而下，每一层自左至右一次编号，根结点编号为$1$，则对任一编号为$i$的结点，
+  + 父结点编号为$floor(i/2)$
+  + 左儿子编号为$2 i$
+  + 右儿子编号为$2 i + 1$
+]
+=== 二叉树的遍历
++ 前序遍历 根 $->$ 左 $->$ 右
++ 中序遍历 左 $->$ 根 $->$ 右
++ 后序遍历 左 $->$ 右 $->$ 根
++ 层序遍历
+前序+中序 / 后序+中序 唯一确定一棵二叉树
+
+前序+后序 不能确定一棵二叉树
 
