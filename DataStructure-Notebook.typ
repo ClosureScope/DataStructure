@@ -64,7 +64,7 @@
 = 栈
 LIFO
 == 栈的顺序实现
-维护`data`, `top`
+维护`data`, `top`指向栈顶元素
 #three-line-table[
   |函数|时间复杂度|实现|
   | --- | --- | --- |
@@ -161,7 +161,76 @@ FIFO
 + 中序遍历 左 $->$ 根 $->$ 右
 + 后序遍历 左 $->$ 右 $->$ 根
 + 层序遍历
-前序+中序 / 后序+中序 唯一确定一棵二叉树
 
-前序+后序 不能确定一棵二叉树
+#strategy[欧拉遍历得到前序，中序，后序遍历][
 
+  沿着二叉树的外轮廓，从根节点左侧出发，始终贴着树的边缘逆时针绕一圈
+  + 经过节点左侧时记录该节点 $->$ 前序遍历
+  + 经过节点下侧时记录该节点 $->$ 中序遍历
+  + 经过节点右侧时记录该节点 $->$ 后序遍历
+]
+
+前序+中序 / 后序+中序 能唯一确定一棵二叉树
+
+前序+后序 不能唯一确定一棵二叉树
+
+完全二叉树的层序遍历 能唯一确定一棵二叉树
+
+满二叉树的前序，中序，后序之一 能唯一确定一棵二叉树
+
+#strategy[前序+中序确定二叉树][
+  + 通过前序遍历确定根节点，在中序遍历中找到根节点，将中序遍历划分为左右子树的中序遍历
+  + 通过中序遍历确定左右子树元素个数，进而找到前序遍历中左右子树的分界点，将前序遍历划分为左右子树的前序遍历
+  + 递归解决左右子树的子问题
+]
+
+=== 二叉树的实现
+==== 顺序实现
+修补为完全二叉树
+==== 链接实现
+维护根指针`root`，每个`Node`维护`data`, `left`, `right`
+#three-line-table[
+  |函数|时间复杂度|实现|
+  | --- | --- | --- |
+  |`create()`|$O(1)$|`root = nullptr`|
+  |`clear(Node* node)`|$O(n)$|`if (node == nullptr) return;
+   clear(node->left);
+    clear(node->right);
+     delete node;`|
+  |`isEmpty()`|$O(1)$|`return root == nullptr`|
+  |`preOrder(Node* node)`|$O(n)$|`if (node == nullptr) return;
+   visit(node);
+    preOrder(node->left);
+     preOrder(node->right);`|
+  |`midOrder(Node* node)`|$O(n)$|`if (node == nullptr) return;
+   midOrder(node->left);
+    visit(node);
+     midOrder(node->right);`|
+  |`postOrder(Node* node)`|$O(n)$|`if (node == nullptr) return;
+   postOrder(node->left);
+    postOrder(node->right);
+     visit(node);`|
+  |`levelOrder()`|$O(n)$|从根节点开始BFS|
+  |`height(Node* node)`|$O(n)$|`if (node == nullptr) return 0;
+  return 1 + max(height(node->left), height(node->right));`|
+  |`size(Node* node)`|$O(n)$|`if (node == nullptr) return 0;
+  return 1 + size(node->left) + size(node->right);`|
+  |`find(int x, Node* node)`|$O(n)$|`if (node == nullptr) return nullptr;
+  if (node->data == x) return node;
+  if (Node* tmp = find(x, node->left)) return tmp;
+  return find(x, node->right);`|
+]
+=== 二叉树遍历的非递归实现
+*使用栈模拟递归中的栈帧*
+
+`node`出栈代表控制权移交给`xOrder(node)`，若不压回即代表销毁`xOrder(node)`的栈帧，注意到前序/中序/后序访问分别在控制权第一/二/三次移交给`xOrder(node)`时访问`node`，故只需在`node`第一/二/三次出栈时访问`node`。
+
+前序遍历可看作`visit(node)`后连续调用两个函数的（广义）尾递归，故第一次出栈后访问，依次压入右，左子树，触发尾递归，销毁了`preOrder(node)`的栈帧，新建了`preOrder(node->right)`, `preOrder(node->left)`的栈帧
+
+中序遍历为`visit(node)`后的尾递归，故第一次出栈后先压回并压入左子树，新建`midOrder(node->left)`的栈帧，第二次出栈后访问，并压入右子树，触发尾递归，销毁了`midOrder(node)`的栈帧，新建了`midOrder(node->right)`的栈帧。
+
+后序遍历第一次出栈后压回并压入左子树，新建了`postOrder(node->left)`的栈帧，第二次出栈后压回并压入右子树，新建了`postOrder(node->right)`的栈帧，第三次出栈后访问，销毁`postOrder(node)`的栈帧。
+
+*使用栈进行欧拉遍历*
+
+欧拉遍历本质是左侧优先的DFS，每个节点需要出栈三次，分别代表到达节点的左侧/下侧/右侧，第一次出栈后压回并压入左子树，第二次出栈后压回并压入右子树，第三次出栈后不需要压回。在第一/二/三次出栈时访问即分别对应前序/中序/后序遍历。
